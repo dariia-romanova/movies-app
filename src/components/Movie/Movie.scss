@@ -1,0 +1,27 @@
+.movie {
+  padding: 20px;
+  border: 1px solid #eee;
+
+  &__titles {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  &__button {
+    border: none;
+    background-color: transparent;
+    color: #777;
+    padding: 0;
+
+    &:hover {
+      cursor: pointer;
+      color: #666;
+    }
+  }
+
+  &__info {
+    display: flex;
+    gap: 30px;
+  }
+}

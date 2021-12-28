@@ -5,20 +5,25 @@ import { useDispatch } from 'react-redux';
 import { deleteMovie } from '../../store/movies';
 
 import './Movie.scss';
+import { MovieInfo } from '../MovieInfo/MovieInfo';
 
 export const Movie = ({ movie }) => {
   const [infoVisible, setInfoVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const handleClear = (movieToDelete) => {
-    dispatch(deleteMovie(movieToDelete.id));
+  const handleClear = async(movieToDelete) => {
+    await dispatch(deleteMovie(movieToDelete.id));
+  };
+
+  const handleInfo = () => {
+    setInfoVisible(!infoVisible);
   };
 
   return (
     <article className="movie">
       <div className="movie__titles">
         <h3 className="movie__title">{movie.title}</h3>
-        <p className="movie__year">{movie.release}</p>
+        <p className="movie__year">{movie.year}</p>
         <button
           className="movie__clear-button"
           type="button"
@@ -30,23 +35,14 @@ export const Movie = ({ movie }) => {
       <button
         className="movie__button"
         type="button"
-        onClick={() => setInfoVisible(!infoVisible)}
+        onClick={() => handleInfo(movie)}
       >
         {infoVisible ? 'Hide info' : 'Read more'}
       </button>
       {infoVisible && (
-        <div className="movie__info">
-          <p>
-            <span className="movie__info-title">Format:</span>
-            {movie.format}
-          </p>
-          <p>
-            <span className="movie__info-title">Actors:</span>
-            {movie.stars}
-          </p>
-        </div>
-      )}
-
+        <MovieInfo format={movie.format} actors={movie.actors} />
+      )
+}
     </article>
   );
 };
@@ -55,8 +51,8 @@ Movie.propTypes = {
   movie: PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    format: PropTypes.string.isRequired,
-    release: PropTypes.number.isRequired,
-    stars: PropTypes.string.isRequired,
+    format: PropTypes.string,
+    year: PropTypes.number.isRequired,
+    actors: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
 };

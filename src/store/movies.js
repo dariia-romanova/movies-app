@@ -1,55 +1,48 @@
-/* eslint-disable no-case-declarations */
 import { combineReducers } from 'redux';
+import {
+  addMovieToServer,
+  deleteMovieFromServer,
+} from '../api/api';
 
 const ADD_MOVIE = 'ADD_MOVIE';
 const DELETE_MOVIE = 'DELETE_MOVIE';
-const IMPORT_MOVIES = 'IMPORT_MOVIES';
 
-export function addMovie(movie) {
-  return {
-    type: ADD_MOVIE,
-    ...movie,
-  };
-}
+export const addMovie = movie => (dispatch) => {
+  addMovieToServer(movie)
+    .then((receivedMovie) => {
+      if (receivedMovie.status === 0) {
+        // eslint-disable-next-line no-console
+        console.log(receivedMovie.error.code);
 
-export function deleteMovie(id) {
-  return {
-    type: DELETE_MOVIE,
-    id,
-  };
-}
-
-export function importMovies(moviesFromFile) {
-  return {
-    type: IMPORT_MOVIES,
-    ...moviesFromFile,
-  };
-}
-
-const defaultMovies = [
-  {
-    id: 1,
-    release: 1100,
-    title: 'dddd',
-    format: 'ffff',
-    stars: 'ddd',
-  },
-];
-
-function movies(state = defaultMovies, action) {
-  switch (action.type) {
-    case ADD_MOVIE:
-      let newId = 1;
-
-      if (state[state.length - 1]) {
-        newId = state[state.length - 1].id + 1;
+        return;
       }
 
+      dispatch({
+        type: ADD_MOVIE,
+        ...receivedMovie.data,
+      });
+    });
+};
+
+export const deleteMovie = id => (dispatch) => {
+  deleteMovieFromServer(id)
+    .then((response) => {
+      dispatch({
+        type: DELETE_MOVIE,
+        id,
+      });
+    });
+};
+
+function movies(state = [], action) {
+  switch (action.type) {
+    case ADD_MOVIE:
       return [
         ...state,
+
         {
           ...action,
-          id: newId,
+          actors: action.actors.map(actor => actor.name),
         },
       ];
 
@@ -58,20 +51,11 @@ function movies(state = defaultMovies, action) {
         ...state.filter(movie => movie.id !== action.id),
       ];
 
-    case IMPORT_MOVIES:
-      // eslint-disable-next-line no-console
-      console.log(action, action.importedMovies);
-
-      return [
-        ...state,
-        ...action.importedMovies,
-      ];
-
     default:
       return state;
   }
 }
 
-export const moviesApp = combineReducers({
+export const reducer = combineReducers({
   movies,
 });

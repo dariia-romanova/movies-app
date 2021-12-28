@@ -11,6 +11,13 @@
   &__button {
     border: none;
     background-color: transparent;
+    color: #777;
+    padding: 0;
+
+    &:hover {
+      cursor: pointer;
+      color: #666;
+    }
   }
 
   &__info {

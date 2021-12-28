@@ -4,7 +4,9 @@ import { Movie } from '../Movie/Movie';
 import './MoviesList.scss';
 
 export function MoviesList() {
-  const movies = useSelector(state => state.movies);
+  const movies = useSelector(state => (
+    state.movies
+  ));
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSorted, setIsSorted] = useState(false);
@@ -15,13 +17,13 @@ export function MoviesList() {
 
   let visibleMovies = movies;
 
-  if (movies.length) {
-    visibleMovies = visibleMovies.filter(({ title, stars }) => {
-      const query = searchQuery.toLowerCase();
+  if (movies.length && searchQuery) {
+    visibleMovies = visibleMovies.filter(({ title, actors }) => {
+      const query = searchQuery.toLowerCase().trim();
 
       return (
         title.toLowerCase().includes(query)
-          || stars.toLowerCase().includes(searchQuery)
+          || actors.join(' ').toLowerCase().includes(searchQuery)
       );
     });
   }
@@ -59,13 +61,17 @@ export function MoviesList() {
         </button>
       </form>
 
-      <ul className="movies-list__list">
-        {visibleMovies.map(movie => (
-          <li key={movie.id}>
-            <Movie movie={movie} />
-          </li>
-        ))}
-      </ul>
+      {movies.length > 0 ? (
+        <ul className="movies-list__list">
+          {visibleMovies.map(movie => (
+            <li key={movie.id}>
+              <Movie movie={movie} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>There are no added movies yet</p>
+      )}
     </div>
   );
 }

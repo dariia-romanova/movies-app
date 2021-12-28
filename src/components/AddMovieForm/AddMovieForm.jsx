@@ -1,37 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import classNames from 'classnames';
 import { addMovie } from '../../store/movies';
 
 import './AddMovieForm.scss';
 
 export const AddMovieForm = () => {
   const [title, setTitle] = useState('');
-  const [release, setRelease] = useState(2021);
+  const [year, setYear] = useState(2021);
   const [format, setFormat] = useState('VHS');
-  const [stars, setStars] = useState('');
+  const [actors, setActors] = useState('');
+  const [isFormValid, setIsFormValid] = useState(true);
   const [importedMovies, setImportedMovies] = useState('');
 
   const dispatch = useDispatch();
 
-  const submitMovie = (event) => {
-    event.preventDefault();
-
-    dispatch(addMovie({
-      title,
-      release,
-      format,
-      stars,
-    }));
-
-    setTitle('');
-    setRelease(2021);
-    setFormat('VHS');
-    setStars('');
-  };
-
   const getText = async(event) => {
-    event.preventDefault();
-
     const reader = new FileReader();
 
     reader.onload = async(loadEvent) => {
@@ -48,9 +32,9 @@ export const AddMovieForm = () => {
 
         return {
           title: moviesParts[0],
-          release: Number(moviesParts[1]),
+          year: moviesParts[1],
           format: moviesParts[2],
-          stars: moviesParts[3],
+          actors: moviesParts[3].split(', '),
         };
       });
 
@@ -60,10 +44,54 @@ export const AddMovieForm = () => {
     reader.readAsText(event.target.files[0]);
   };
 
-  const submitMovies = (event) => {
-    event.preventDefault();
+  const validateForm = () => {
+    if (title && year && format && actors) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  };
 
-    importedMovies.forEach((movie) => {
+  const handleActorsField = (event) => {
+    setIsFormValid(true);
+    setActors(event.target.value);
+  };
+
+  const handleTitleField = (event) => {
+    setIsFormValid(true);
+    setTitle(event.target.value);
+  };
+
+  const postMovie = async() => {
+    const actorsData = actors.split(', ');
+
+    await dispatch(addMovie({
+      title,
+      year,
+      format,
+      actors: actorsData,
+    }));
+
+    setTitle('');
+    setYear(2021);
+    setFormat('VHS');
+    setActors([]);
+  };
+
+  const submitMovie = (event) => {
+    event.preventDefault();
+    validateForm();
+
+    if (title.trim() && year && format && actors) {
+      setIsFormValid(true);
+      postMovie();
+    } else {
+      setIsFormValid(false);
+    }
+  };
+
+  const postMovies = async() => {
+    await importedMovies.forEach((movie) => {
       dispatch(addMovie({
         ...movie,
       }));
@@ -72,9 +100,19 @@ export const AddMovieForm = () => {
     setImportedMovies('');
   };
 
+  const submitMovies = async(event) => {
+    event.preventDefault();
+    postMovies('');
+
+    return 'post()';
+  };
+
   return (
     <div className="forms">
-      <form className="forms__form">
+      <form
+        className="forms__form"
+        onSubmit={submitMovie}
+      >
         <legend className="forms__title">Add Movie</legend>
 
         <div className="forms__inputs">
@@ -84,7 +122,7 @@ export const AddMovieForm = () => {
               className="forms__input"
               type="text"
               value={title}
-              onChange={event => setTitle(event.target.value)}
+              onChange={handleTitleField}
             />
           </label>
 
@@ -96,8 +134,9 @@ export const AddMovieForm = () => {
               min="1900"
               max="2021"
               step="1"
-              value={release}
-              onChange={event => setRelease(event.target.value)}
+              onChange={(event) => {
+                setYear(Number(event.target.value));
+              }}
             />
           </label>
 
@@ -118,24 +157,35 @@ export const AddMovieForm = () => {
             <input
               className="forms__input"
               type="text"
-              value={stars}
-              onChange={event => setStars(event.target.value)}
+              value={actors}
+              onChange={handleActorsField}
             />
           </label>
           <button
             type="submit"
             className="forms__button"
-            onClick={submitMovie}
           >
             Add
           </button>
         </div>
+        {!isFormValid && (
+          <p className="forms__warning">Please, fill all fields</p>
+        )}
       </form>
 
-      <form className="forms__form">
+      <form
+        className="forms__form"
+        onSubmit={submitMovies}
+      >
         <legend className="forms__title">Import Movies</legend>
         <div className="forms__inputs">
-          <label className="forms__upload">
+          <label
+            className={
+              classNames(
+                'forms__upload',
+                { 'forms__upload--uploaded': importedMovies },
+              )}
+          >
             Choose file
             <input
               className="forms__upload-field"
@@ -147,7 +197,7 @@ export const AddMovieForm = () => {
           <button
             className="forms__button"
             type="submit"
-            onClick={submitMovies}
+            disabled={!importedMovies}
           >
             Import
           </button>

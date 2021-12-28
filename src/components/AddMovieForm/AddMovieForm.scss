@@ -22,6 +22,30 @@
 
   &__button {
     padding: 8px 24px;
+    border: 0;
+    background-color: #1260cc;
+    color: #fff;
+
+    transition: background-color 0.3s;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #1260ff;
+    }
+
+    &:disabled {
+      cursor: auto;
+      color: #4e85e5;
+      background-color: #1260cc;
+    }
+  }
+
+  &__warning {
+    color: #c2262f;
+  }
+
+  &__upload-field {
+    display: none;
   }
 
   &__upload {
@@ -30,20 +54,26 @@
     align-items: center;
 
     &::after {
-      content: '';
+      content: 'upload';
+      padding: 8px 24px;
       display: inline-block;
-      width: 30px;
-      height: 30px;
-      border: 1px solid #777;
-      background-color: #eee;
+      background-color: #1260cc;
+      color: #fff;
     }
 
     &:hover {
       cursor: pointer;
-    }
-  }
 
-  &__upload-field {
-    display: none;
+      &::after {
+        background-color: #1260ff;
+      }
+    }
+
+    &--uploaded {
+      &::after {
+        content: 'uploaded';
+        background-color: #3ea055;
+      }
+    }
   }
 }

@@ -61,6 +61,7 @@ export function MoviesList() {
         </button>
       </form>
 
+      <h2>Added movies</h2>
       {movies.length > 0 ? (
         <ul className="movies-list__list">
           {visibleMovies.map(movie => (

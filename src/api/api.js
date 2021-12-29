@@ -1,5 +1,21 @@
 /* eslint-disable max-len */
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'http://localhost:48700/api/v1';
+
+export const createSession = () => (
+  fetch(`${API_URL}/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({
+      email: 'petro@gmail.com',
+      name: 'Petrov Petro',
+      password: 'super-password',
+      confirmPassword: 'super-password',
+    }),
+  })
+    .then(response => response.json())
+);
 
 export const addMovieToServer = (movie) => {
   const url = `${API_URL}/movies`;

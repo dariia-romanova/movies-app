@@ -6,8 +6,8 @@ To run this app:
 `docker pull webbylabhub/movies`
 
 
-3. Run it, use 8000 port
-`docker run --name movies-api -p 8000:8000 webbylabhub/movies`
+3. Run it, use 48700 port
+`docker run --name movies-api -p 48700:8000 webbylabhub/movies`
 
 
 3. Pull image from https://hub.docker.com/r/dariiaromanova/movies
@@ -27,4 +27,4 @@ This app's features:
 4. Search by title or actor among added movies
 
 Issues: 
-1. Load initial movies from server by 'GET' method isn't availible yet
+1. Load movies from server by 'GET' method isn't availible yet

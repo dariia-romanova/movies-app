@@ -12,7 +12,7 @@ export const addMovie = movie => (dispatch) => {
     .then((receivedMovie) => {
       if (receivedMovie.status === 0) {
         // eslint-disable-next-line no-console
-        console.log(receivedMovie.error.code);
+        console.log('Movie already added');
 
         return;
       }

@@ -8,7 +8,7 @@ import './AddMovieForm.scss';
 export const AddMovieForm = () => {
   const [title, setTitle] = useState('');
   const [year, setYear] = useState(2021);
-  const [format, setFormat] = useState('VHS');
+  const [format, setFormat] = useState('');
   const [actors, setActors] = useState('');
   const [isFormValid, setIsFormValid] = useState(true);
   const [importedMovies, setImportedMovies] = useState('');
@@ -74,7 +74,7 @@ export const AddMovieForm = () => {
 
     setTitle('');
     setYear(2021);
-    setFormat('VHS');
+    setFormat('');
     setActors([]);
   };
 
@@ -134,6 +134,7 @@ export const AddMovieForm = () => {
               min="1900"
               max="2021"
               step="1"
+              value={String(year)}
               onChange={(event) => {
                 setYear(Number(event.target.value));
               }}
@@ -144,8 +145,13 @@ export const AddMovieForm = () => {
             Format
             <select
               className="forms__input"
-              onChange={event => setFormat(event.target.value)}
+              value={format}
+              onChange={(event) => {
+                setIsFormValid(true);
+                setFormat(event.target.value);
+              }}
             >
+              <option value="" checked disabled>Choose</option>
               <option value="VHS">VHS</option>
               <option value="DVS">DVD</option>
               <option value="Blue-Ray">Blu-Ray</option>

@@ -15,7 +15,7 @@ To run this app:
 
 
 4. Run app
-`docker run --name movies -p 3000:3000 -e API_URL=http://localhost:8000/api/v1 dariiaromanova/movies`
+`docker run --name movies -p 3000:3000 dariiaromanova/movies`
 
 
 5. Open http://localhost:3000/ in your browser
